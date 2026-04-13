@@ -1,0 +1,9 @@
+[package]
+name = "btstack-sys"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Low-level FFI prototype for integrating BTstack into Rust"
+
+[lib]
+name = "btstack_sys"
