@@ -3,26 +3,46 @@
 ## Goal
 This repository aims to make [BlueKitchen BTstack](https://github.com/bluekitchen/btstack) usable from Rust.
 
-The initial target is to recreate the behavior of:
-- Windows port: `port/windows-winusb`
-- Example app: `example/gatt_counter.c`
+The initial target is to recreate behavior similar to BTstack USB host usage while keeping transport concerns modular.
 
-## Repository structure
+## Repository structure (current)
 
 ```text
 /
-├── btstack-sys/      # FFI + C build integration
-├── btstack/          # safe wrapper (next step)
-└── app/              # sample app (next step)
+├── btstack-sys/      # raw FFI + C build integration (BTstack core-only)
+└── (planned crates)
 ```
+
+## Planned crate layout
+
+```text
+/
+├── btstack-sys/              # raw BTstack FFI (core stack only, no USB backend)
+├── btstack-transport-nusb/   # nusb-based HCI transport backend
+├── btstack/                  # safe wrapper crate
+└── app/                      # sample app crate(s)
+```
+
+### Responsibilities
+
+- `btstack-sys`
+  - Build vendored BTstack **core layers only**.
+  - Expose low-level symbols/types.
+  - Do **not** include `libusb`/`winusb` transport linkage.
+- `btstack-transport-nusb`
+  - Implement the HCI transport boundary using `nusb`.
+  - Own USB runtime/event-loop integration details.
+- `btstack`
+  - Provide ergonomic safe APIs.
+  - Orchestrate runtime + transport selection.
 
 ## Current status
 
-This repository now contains:
+This repository currently contains:
 - a Cargo workspace
-- a `btstack-sys` crate prototype
+- a `btstack-sys` prototype
 - submodule metadata for vendoring BTstack at `btstack-sys/vendor/btstack`
-- `build.rs` logic that tries to build vendored BTstack via CMake and falls back to a local shim when unavailable
+- a dedicated CMake project at `btstack-sys/cmake/btstack-core-only` used by `btstack-sys/build.rs`
 
 ## Submodule setup
 
@@ -32,84 +52,46 @@ Initialize the BTstack submodule:
 git submodule update --init --recursive
 ```
 
-If your environment blocks GitHub access, submodule initialization will fail. In that case, `cargo build` falls back to the local shim so bootstrap work can continue.
-
 ## Build behavior
 
 `btstack-sys/build.rs` does the following during `cargo build`:
-1. Checks whether `btstack-sys/vendor/btstack` exists and contains `CMakeLists.txt`.
-2. If present, runs:
-   - `cmake -S btstack-sys/vendor/btstack -B <OUT_DIR>/btstack-cmake-build`
-   - `cmake --build <OUT_DIR>/btstack-cmake-build`
-3. Regardless of vendor-build success, compiles a local C shim to keep the current bootstrap Rust API stable.
+1. Checks whether `btstack-sys/vendor/btstack` exists.
+2. Runs CMake against `btstack-sys/cmake/btstack-core-only`.
+3. Passes `BTSTACK_ROOT=<repo>/btstack-sys/vendor/btstack`.
+4. Builds static `btstack` and links it into the Rust crate.
 
-This is an incremental step toward full raw BTstack FFI exposure.
+### Notes
 
-### Windows WinUSB prerequisites
+- `btstack-sys` intentionally avoids platform USB backends (`libusb`, `winusb`).
+- USB transport integration is planned as a separate crate (`btstack-transport-nusb`).
 
-For Windows vendor builds (`port/windows-winusb`), make sure these tools are available before running Cargo:
+## Quick check
 
-```powershell
-cmake --version
-python --version
-```
-
-If `cmake` is not on `PATH`, set one of these environment variables to the full `cmake.exe` path:
-
-```powershell
-$env:BTSTACK_CMAKE = 'C:\Program Files\CMake\bin\cmake.exe'
-# or
-$env:CMAKE = 'C:\Program Files\CMake\bin\cmake.exe'
-```
-
-Then verify:
-
-```powershell
+```bash
 cargo check -p btstack-sys -vv
 ```
 
-When the vendor path is active you should see:
+When successful, output should include:
 - `cargo:rustc-cfg=btstack_vendor_build`
-- link directives for `winusb`, `setupapi`, `ws2_32`, and `bthprops`
-
-### Linux libusb prerequisites
-
-For Linux vendor builds (`port/libusb`), install the libusb development package first:
-
-```bash
-sudo apt-get update
-sudo apt-get install -y libusb-1.0-0-dev pkg-config
-```
-
-Then verify:
-
-```bash
-pkg-config --modversion libusb-1.0
-cargo check -p btstack-sys -vv
-```
-
-When the vendor path is active you should see BTstack CMake output ending with:
-- `Built target btstack`
-- `cargo:rustc-cfg=btstack_vendor_build`
+- `cargo:rustc-link-lib=static=btstack`
 
 ## Roadmap
 
-### Milestone 1: `btstack-sys` foundation (in progress)
+### Milestone 1: `btstack-sys` core-only foundation (in progress)
 - Workspace setup
-- Build script and C compilation path
-- Minimal FFI API shape
-- Submodule metadata and vendor build hook
+- Vendor submodule integration
+- Core-only BTstack static library build
+- Minimal Rust FFI surface
 
-### Milestone 2: full BTstack raw FFI
-- Initialize submodule in CI and development environments
-- Bind selected BTstack headers
-- Replace shim API with direct BTstack symbols
+### Milestone 2: transport backend crate (`btstack-transport-nusb`)
+- Define transport boundary between `btstack-sys` and Rust backend
+- Implement nusb-based packet I/O
+- Integrate lifecycle and callback handling
 
 ### Milestone 3: safe wrapper crate (`btstack`)
-- Introduce runtime abstraction
 - Hide unsafe callback plumbing
-- Expose ergonomic Rust API for GATT peripheral setup
+- Expose ergonomic Rust APIs for common BLE/classic tasks
 
 ### Milestone 4: sample app (`app`)
 - Recreate `gatt_counter` behavior in Rust
-- Document Windows setup and run instructions
+- Document setup and run flows
