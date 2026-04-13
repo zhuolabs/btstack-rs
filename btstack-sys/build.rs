@@ -8,6 +8,8 @@ fn main() {
     println!("cargo:rerun-if-changed=include/btstack_stub.h");
     println!("cargo:rerun-if-changed=vendor/btstack");
     println!("cargo:rerun-if-env-changed=TARGET");
+    println!("cargo:rerun-if-env-changed=CMAKE");
+    println!("cargo:rerun-if-env-changed=BTSTACK_CMAKE");
 
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set by Cargo"));
     let vendor_dir = manifest_dir.join("vendor").join("btstack");
@@ -17,7 +19,7 @@ fn main() {
         return;
     }
 
-    build_local_stub();
+    panic!("Failed to build BTstack from vendor directory, and no fallback implementation is available. Please initialize the BTstack submodule or ensure CMake is available to build the vendor version.");
 }
 
 fn try_build_vendor_btstack(vendor_dir: &Path) -> bool {
@@ -27,6 +29,13 @@ fn try_build_vendor_btstack(vendor_dir: &Path) -> bool {
     }
 
     let target = env::var("TARGET").unwrap_or_default();
+    if let Some(cmake_path) = resolve_cmake_executable(&target) {
+        env::set_var("CMAKE", &cmake_path);
+    } else {
+        emit_missing_cmake_warning(&target);
+        return false;
+    }
+
     let source_dir = select_vendor_source_dir(vendor_dir, &target);
     let cmake_lists = source_dir.join("CMakeLists.txt");
 
@@ -77,6 +86,29 @@ fn try_build_vendor_btstack(vendor_dir: &Path) -> bool {
     let cmake_build_dir = cmake_out_dir.join("build");
     emit_btstack_link_settings(&cmake_install_dir, &cmake_build_dir, &target);
     true
+}
+
+fn resolve_cmake_executable(_target: &str) -> Option<PathBuf> {
+    if let Some(explicit) = env::var_os("BTSTACK_CMAKE").or_else(|| env::var_os("CMAKE")) {
+        let explicit = PathBuf::from(explicit);
+        if command_works(&explicit, "--version") {
+            return Some(explicit);
+        }
+    }
+
+    if command_works(Path::new("cmake"), "--version") {
+        return Some(PathBuf::from("cmake"));
+    }
+
+    #[cfg(windows)]
+    {
+        let candidate = find_visual_studio_bundled_cmake_from_compiler()?;
+        if command_works(&candidate, "--version") {
+            return Some(candidate);
+        }
+    }
+
+    None
 }
 
 fn pkg_config_has_module(module_name: &str) -> bool {
@@ -136,9 +168,36 @@ fn emit_btstack_link_settings(cmake_install_dir: &Path, cmake_build_dir: &Path, 
     }
 }
 
-fn build_local_stub() {
-    cc::Build::new()
-        .file("src/stub_btstack.c")
-        .include("include")
-        .compile("btstack_stub");
+fn command_works(program: &Path, arg: &str) -> bool {
+    Command::new(program)
+        .arg(arg)
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
+}
+
+fn emit_missing_cmake_warning(target: &str) {
+    if target.contains("windows") {
+        println!(
+            "cargo:warning=BTstack WinUSB vendor build requires CMake. Install CMake or set BTSTACK_CMAKE/CMAKE to cmake.exe; falling back to local C shim"
+        );
+    } else {
+        println!("cargo:warning=CMake is not available, falling back to local C shim");
+    }
+}
+
+#[cfg(windows)]
+fn find_visual_studio_bundled_cmake_from_compiler() -> Option<PathBuf> {
+    let compiler = cc::Build::new().get_compiler();
+    let compiler_path = compiler.path();
+
+    let vc_dir = compiler_path
+        .ancestors()
+        .find(|path| path.file_name().is_some_and(|name| name == "VC"))?;
+
+    vc_dir
+        .parent()?
+        .join(r"Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe")
+        .canonicalize()
+        .ok()
 }

@@ -45,6 +45,33 @@ If your environment blocks GitHub access, submodule initialization will fail. In
 
 This is an incremental step toward full raw BTstack FFI exposure.
 
+### Windows WinUSB prerequisites
+
+For Windows vendor builds (`port/windows-winusb`), make sure these tools are available before running Cargo:
+
+```powershell
+cmake --version
+python --version
+```
+
+If `cmake` is not on `PATH`, set one of these environment variables to the full `cmake.exe` path:
+
+```powershell
+$env:BTSTACK_CMAKE = 'C:\Program Files\CMake\bin\cmake.exe'
+# or
+$env:CMAKE = 'C:\Program Files\CMake\bin\cmake.exe'
+```
+
+Then verify:
+
+```powershell
+cargo check -p btstack-sys -vv
+```
+
+When the vendor path is active you should see:
+- `cargo:rustc-cfg=btstack_vendor_build`
+- link directives for `winusb`, `setupapi`, `ws2_32`, and `bthprops`
+
 ### Linux libusb prerequisites
 
 For Linux vendor builds (`port/libusb`), install the libusb development package first:
