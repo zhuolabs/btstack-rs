@@ -45,6 +45,26 @@ If your environment blocks GitHub access, submodule initialization will fail. In
 
 This is an incremental step toward full raw BTstack FFI exposure.
 
+### Linux libusb prerequisites
+
+For Linux vendor builds (`port/libusb`), install the libusb development package first:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libusb-1.0-0-dev pkg-config
+```
+
+Then verify:
+
+```bash
+pkg-config --modversion libusb-1.0
+cargo check -p btstack-sys -vv
+```
+
+When the vendor path is active you should see BTstack CMake output ending with:
+- `Built target btstack`
+- `cargo:rustc-cfg=btstack_vendor_build`
+
 ## Roadmap
 
 ### Milestone 1: `btstack-sys` foundation (in progress)

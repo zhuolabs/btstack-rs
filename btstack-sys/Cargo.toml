@@ -7,3 +7,7 @@ description = "Low-level FFI prototype for integrating BTstack into Rust"
 
 [lib]
 name = "btstack_sys"
+
+[build-dependencies]
+cc = "1.2"
+cmake = "0.1"

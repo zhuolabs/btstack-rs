@@ -1,4 +1,5 @@
 use std::env;
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -6,6 +7,7 @@ fn main() {
     println!("cargo:rerun-if-changed=src/stub_btstack.c");
     println!("cargo:rerun-if-changed=include/btstack_stub.h");
     println!("cargo:rerun-if-changed=vendor/btstack");
+    println!("cargo:rerun-if-env-changed=TARGET");
 
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set by Cargo"));
     let vendor_dir = manifest_dir.join("vendor").join("btstack");
@@ -24,87 +26,119 @@ fn try_build_vendor_btstack(vendor_dir: &Path) -> bool {
         return false;
     }
 
-    let cmake_lists = vendor_dir.join("CMakeLists.txt");
+    let target = env::var("TARGET").unwrap_or_default();
+    let source_dir = select_vendor_source_dir(vendor_dir, &target);
+    let cmake_lists = source_dir.join("CMakeLists.txt");
+
     if !cmake_lists.exists() {
         println!(
-            "cargo:warning=Found vendor/btstack but CMakeLists.txt is missing, falling back to local C shim"
+            "cargo:warning=Expected CMakeLists.txt at {} but it is missing, falling back to local C shim",
+            cmake_lists.display()
         );
         return false;
     }
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR is set by Cargo"));
-    let build_dir = out_dir.join("btstack-cmake-build");
+    let cmake_out_dir = out_dir.join("btstack-cmake");
 
-    let configure = Command::new("cmake")
-        .arg("-S")
-        .arg(vendor_dir)
-        .arg("-B")
-        .arg(&build_dir)
-        .arg("-DBUILD_SHARED_LIBS=OFF")
-        .arg("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
-        .status();
-
-    let Ok(configure_status) = configure else {
-        println!("cargo:warning=cmake command is not available, falling back to local C shim");
-        return false;
-    };
-
-    if !configure_status.success() {
-        println!("cargo:warning=Failed to configure BTstack via CMake, falling back to local C shim");
+    if target.contains("linux") && !pkg_config_has_module("libusb-1.0") {
+        println!(
+            "cargo:warning=BTstack libusb build requires pkg-config module libusb-1.0; install libusb dev package (e.g. libusb-1.0-0-dev)"
+        );
         return false;
     }
 
-    let build_status = Command::new("cmake")
-        .arg("--build")
-        .arg(&build_dir)
-        .status();
+    let build_result = catch_unwind(AssertUnwindSafe(|| {
+        let mut config = cmake::Config::new(&source_dir);
+        config
+            .out_dir(&cmake_out_dir)
+            .profile("Release")
+            .define("BUILD_SHARED_LIBS", "OFF")
+            .define("CMAKE_POSITION_INDEPENDENT_CODE", "ON")
+            .build_target("btstack");
 
-    let Ok(build_status) = build_status else {
-        println!("cargo:warning=Failed to run cmake --build, falling back to local C shim");
-        return false;
+        config.build()
+    }));
+
+    let cmake_install_dir = match build_result {
+        Ok(path) => path,
+        Err(_) => {
+            if target.contains("linux") {
+                println!(
+                    "cargo:warning=Failed to configure/build BTstack libusb port; install libusb dev package (e.g. libusb-1.0-0-dev) and retry"
+                );
+            } else {
+                println!("cargo:warning=Failed to configure/build BTstack via cmake crate, falling back to local C shim");
+            }
+            return false;
+        }
     };
 
-    if !build_status.success() {
-        println!("cargo:warning=BTstack CMake build failed, falling back to local C shim");
-        return false;
-    }
-
-    // Vendor build succeeded. We currently keep Rust API mapped to local shim symbols,
-    // so until the full raw BTstack FFI layer is introduced, we still compile the shim.
-    println!("cargo:warning=BTstack vendor build completed; compiling shim for bootstrap API compatibility");
-    build_local_stub();
+    let cmake_build_dir = cmake_out_dir.join("build");
+    emit_btstack_link_settings(&cmake_install_dir, &cmake_build_dir, &target);
     true
 }
 
+fn pkg_config_has_module(module_name: &str) -> bool {
+    Command::new("pkg-config")
+        .arg("--exists")
+        .arg(module_name)
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
+}
+
+fn select_vendor_source_dir(vendor_dir: &Path, target: &str) -> PathBuf {
+    if target.contains("windows") {
+        let windows_port = vendor_dir.join("port").join("windows-winusb");
+        if windows_port.join("CMakeLists.txt").exists() {
+            return windows_port;
+        }
+    }
+
+    if target.contains("linux") {
+        let linux_port = vendor_dir.join("port").join("libusb");
+        if linux_port.join("CMakeLists.txt").exists() {
+            return linux_port;
+        }
+    }
+
+    vendor_dir.to_path_buf()
+}
+
+fn emit_btstack_link_settings(cmake_install_dir: &Path, cmake_build_dir: &Path, target: &str) {
+    println!("cargo:rustc-link-lib=static=btstack");
+
+    for dir in [
+        cmake_install_dir,
+        &cmake_install_dir.join("lib"),
+        cmake_build_dir,
+        &cmake_build_dir.join("Release"),
+        &cmake_build_dir.join("Debug"),
+    ] {
+        if dir.exists() {
+            println!("cargo:rustc-link-search=native={}", dir.display());
+        }
+    }
+
+    if target.contains("windows") {
+        println!("cargo:rustc-link-lib=winusb");
+        println!("cargo:rustc-link-lib=setupapi");
+        println!("cargo:rustc-link-lib=ws2_32");
+        println!("cargo:rustc-link-lib=bthprops");
+    }
+
+    if target.contains("linux") {
+        println!("cargo:rustc-link-lib=usb-1.0");
+        println!("cargo:rustc-link-lib=pthread");
+        println!("cargo:rustc-link-lib=rt");
+        println!("cargo:rustc-link-lib=m");
+    }
+}
+
 fn build_local_stub() {
-    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR is set by Cargo"));
-    let object_path = out_dir.join("stub_btstack.o");
-    let library_path = out_dir.join("libbtstack_stub.a");
-
-    let status = Command::new("cc")
-        .args([
-            "-c",
-            "src/stub_btstack.c",
-            "-Iinclude",
-            "-o",
-            object_path.to_str().expect("object path is valid UTF-8"),
-        ])
-        .status()
-        .expect("failed to execute C compiler");
-
-    assert!(status.success(), "C compiler failed");
-
-    let status = Command::new("ar")
-        .args([
-            "crus",
-            library_path.to_str().expect("library path is valid UTF-8"),
-            object_path.to_str().expect("object path is valid UTF-8"),
-        ])
-        .status()
-        .expect("failed to execute ar");
-
-    assert!(status.success(), "ar failed");
-
-    println!("cargo:rustc-link-search=native={}", out_dir.display());
-    println!("cargo:rustc-link-lib=static=btstack_stub");
+    cc::Build::new()
+        .file("src/stub_btstack.c")
+        .include("include")
+        .compile("btstack_stub");
 }
