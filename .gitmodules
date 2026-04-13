@@ -1,0 +1,4 @@
+[submodule "btstack-sys/vendor/btstack"]
+	path = btstack-sys/vendor/btstack
+	url = https://github.com/bluekitchen/btstack.git
+	branch = master
