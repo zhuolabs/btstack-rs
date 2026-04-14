@@ -20,6 +20,30 @@ pub type hci_transport_reset_link_t = Option<unsafe extern "C" fn()>;
 pub type hci_transport_set_sco_config_t =
     Option<unsafe extern "C" fn(voice_setting: u16, num_connections: c_int)>;
 
+/// Matches `hci_transport_config_type_t` in BTstack `src/hci_transport.h`.
+#[repr(C)]
+pub enum hci_transport_config_type_t {
+    HCI_TRANSPORT_CONFIG_UART = 0,
+    HCI_TRANSPORT_CONFIG_USB = 1,
+    HCI_TRANSPORT_CONFIG_LINUX = 2,
+}
+
+/// Matches `hci_transport_config_t` in BTstack `src/hci_transport.h`.
+#[repr(C)]
+pub struct hci_transport_config_t {
+    pub type_: hci_transport_config_type_t,
+}
+
+/// C-compatible configuration passed to a custom USB `hci_transport_t::init`.
+///
+/// BTstack currently only requires the transport config discriminator for USB
+/// transports. Keep this struct minimal to preserve `btstack-sys` as a thin
+/// wrapper.
+#[repr(C)]
+pub struct custom_usb_config_t {
+    pub base: hci_transport_config_t,
+}
+
 /// Matches `hci_transport_t` in BTstack `src/hci_transport.h`
 /// at commit `5bc5cbdbeec33be1fdbd0d50e04c0f6deab99d2d`.
 ///
