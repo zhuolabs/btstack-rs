@@ -1,5 +1,5 @@
 [workspace]
-members = [
+members = ["btstack",
     "btstack-sys",
 ]
 resolver = "2"
