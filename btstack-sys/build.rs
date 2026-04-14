@@ -9,7 +9,8 @@ fn main() {
     println!("cargo:rerun-if-env-changed=CMAKE");
     println!("cargo:rerun-if-env-changed=BTSTACK_CMAKE");
 
-    let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set by Cargo"));
+    let manifest_dir =
+        PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set by Cargo"));
     let vendor_dir = manifest_dir.join("vendor").join("btstack");
 
     if try_build_vendor_btstack_core(&manifest_dir, &vendor_dir) {
