@@ -3,13 +3,6 @@
 version = 4
 
 [[package]]
-name = "btstack"
-version = "0.1.0"
-dependencies = [
- "btstack-sys",
-]
-
-[[package]]
 name = "btstack-sys"
 version = "0.1.0"
 dependencies = [
