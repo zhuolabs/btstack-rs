@@ -1,0 +1,11 @@
+[package]
+name = "btstack-hci-transport-nusb"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "nusb-based HCI transport implementation for BTstack"
+
+[dependencies]
+btstack-sys = { path = "../btstack-sys" }
+nusb = "0.1"
+futures-lite = "2"

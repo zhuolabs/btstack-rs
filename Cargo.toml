@@ -2,5 +2,6 @@
 members = [
     "btstack-sys",
     "btstack-gatt",
+    "btstack-hci-transport-nusb",
 ]
 resolver = "2"
