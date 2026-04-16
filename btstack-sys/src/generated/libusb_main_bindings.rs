@@ -220,6 +220,65 @@ pub const HCI_EVENT_BIP_META: u32 = 243;
 pub const HCI_EVENT_MAP_META: u32 = 244;
 pub const HCI_EVENT_MESH_META: u32 = 245;
 pub const HCI_EVENT_LEAUDIO_META: u32 = 246;
+pub const ATT_ERROR_RESPONSE: u32 = 1;
+pub const ATT_EXCHANGE_MTU_REQUEST: u32 = 2;
+pub const ATT_EXCHANGE_MTU_RESPONSE: u32 = 3;
+pub const ATT_FIND_INFORMATION_REQUEST: u32 = 4;
+pub const ATT_FIND_INFORMATION_REPLY: u32 = 5;
+pub const ATT_FIND_BY_TYPE_VALUE_REQUEST: u32 = 6;
+pub const ATT_FIND_BY_TYPE_VALUE_RESPONSE: u32 = 7;
+pub const ATT_READ_BY_TYPE_REQUEST: u32 = 8;
+pub const ATT_READ_BY_TYPE_RESPONSE: u32 = 9;
+pub const ATT_READ_REQUEST: u32 = 10;
+pub const ATT_READ_RESPONSE: u32 = 11;
+pub const ATT_READ_BLOB_REQUEST: u32 = 12;
+pub const ATT_READ_BLOB_RESPONSE: u32 = 13;
+pub const ATT_READ_MULTIPLE_REQUEST: u32 = 14;
+pub const ATT_READ_MULTIPLE_RESPONSE: u32 = 15;
+pub const ATT_READ_BY_GROUP_TYPE_REQUEST: u32 = 16;
+pub const ATT_READ_BY_GROUP_TYPE_RESPONSE: u32 = 17;
+pub const ATT_WRITE_REQUEST: u32 = 18;
+pub const ATT_WRITE_RESPONSE: u32 = 19;
+pub const ATT_PREPARE_WRITE_REQUEST: u32 = 22;
+pub const ATT_PREPARE_WRITE_RESPONSE: u32 = 23;
+pub const ATT_EXECUTE_WRITE_REQUEST: u32 = 24;
+pub const ATT_EXECUTE_WRITE_RESPONSE: u32 = 25;
+pub const ATT_HANDLE_VALUE_NOTIFICATION: u32 = 27;
+pub const ATT_HANDLE_VALUE_INDICATION: u32 = 29;
+pub const ATT_HANDLE_VALUE_CONFIRMATION: u32 = 30;
+pub const ATT_READ_MULTIPLE_VARIABLE_REQ: u32 = 32;
+pub const ATT_READ_MULTIPLE_VARIABLE_RSP: u32 = 33;
+pub const ATT_MULTIPLE_HANDLE_VALUE_NTF: u32 = 35;
+pub const ATT_WRITE_COMMAND: u32 = 82;
+pub const ATT_SIGNED_WRITE_COMMAND: u32 = 210;
+pub const ATT_PROPERTY_UUID128: u32 = 512;
+pub const ATT_PROPERTY_READ_PERMISSION_BIT_0: u32 = 1024;
+pub const ATT_PROPERTY_READ_PERMISSION_BIT_1: u32 = 2048;
+pub const ATT_PROPERTY_WRITE_PERMISSION_BIT_0: u32 = 1;
+pub const ATT_PROPERTY_WRITE_PERMISSION_BIT_1: u32 = 16;
+pub const ATT_PROPERTY_READ_PERMISSION_SC: u32 = 32;
+pub const ATT_PROPERTY_WRITE_PERMISSION_SC: u32 = 128;
+pub const ATT_READ_ERROR_CODE_OFFSET: u32 = 65024;
+pub const ATT_READ_RESPONSE_PENDING: u32 = 65535;
+pub const ATT_INTERNAL_WRITE_RESPONSE_PENDING: u32 = 65534;
+pub const HCI_CMD_HEADER_SIZE: u32 = 3;
+pub const HCI_ACL_HEADER_SIZE: u32 = 4;
+pub const HCI_SCO_HEADER_SIZE: u32 = 3;
+pub const HCI_EVENT_HEADER_SIZE: u32 = 2;
+pub const HCI_ISO_HEADER_SIZE: u32 = 4;
+pub const HCI_EVENT_PAYLOAD_SIZE: u32 = 255;
+pub const HCI_CMD_PAYLOAD_SIZE: u32 = 255;
+pub const HCI_ISO_PAYLOAD_SIZE: u32 = 310;
+pub const HCI_CMD_PAYLOAD_SIZE_LE: u32 = 32;
+pub const HCI_EVENT_BUFFER_SIZE: u32 = 258;
+pub const HCI_CMD_BUFFER_SIZE: u32 = 258;
+pub const HCI_ACL_BUFFER_SIZE: u32 = 1699;
+pub const HCI_INCOMING_PACKET_BUFFER_SIZE: u32 = 1699;
+pub const HCI_OUTGOING_PACKET_BUFFER_SIZE: u32 = 1699;
+pub const HCI_OUTGOING_PRE_BUFFER_SIZE: u32 = 1;
+pub const ATT_REQUEST_BUFFER_SIZE: u32 = 1695;
+pub const HCI_ISO_GROUP_ID_SINGLE_CIS: u32 = 254;
+pub const HCI_ISO_GROUP_ID_INVALID: u32 = 255;
 pub const BLUETOOTH_COMPANY_ID_ERICSSON_TECHNOLOGY_LICENSING: u32 = 0;
 pub const BLUETOOTH_COMPANY_ID_NOKIA_MOBILE_PHONES: u32 = 1;
 pub const BLUETOOTH_COMPANY_ID_INTEL_CORP: u32 = 2;
@@ -3086,65 +3145,6 @@ pub const HCI_DUMP_HEADER_SIZE_PACKETLOGGER: u32 = 13;
 pub const HCI_DUMP_HEADER_SIZE_BLUEZ: u32 = 13;
 pub const HCI_DUMP_HEADER_SIZE_BTSNOOP: u32 = 24;
 pub const HCI_DUMP_MAX_MESSAGE_LEN: u32 = 256;
-pub const ATT_ERROR_RESPONSE: u32 = 1;
-pub const ATT_EXCHANGE_MTU_REQUEST: u32 = 2;
-pub const ATT_EXCHANGE_MTU_RESPONSE: u32 = 3;
-pub const ATT_FIND_INFORMATION_REQUEST: u32 = 4;
-pub const ATT_FIND_INFORMATION_REPLY: u32 = 5;
-pub const ATT_FIND_BY_TYPE_VALUE_REQUEST: u32 = 6;
-pub const ATT_FIND_BY_TYPE_VALUE_RESPONSE: u32 = 7;
-pub const ATT_READ_BY_TYPE_REQUEST: u32 = 8;
-pub const ATT_READ_BY_TYPE_RESPONSE: u32 = 9;
-pub const ATT_READ_REQUEST: u32 = 10;
-pub const ATT_READ_RESPONSE: u32 = 11;
-pub const ATT_READ_BLOB_REQUEST: u32 = 12;
-pub const ATT_READ_BLOB_RESPONSE: u32 = 13;
-pub const ATT_READ_MULTIPLE_REQUEST: u32 = 14;
-pub const ATT_READ_MULTIPLE_RESPONSE: u32 = 15;
-pub const ATT_READ_BY_GROUP_TYPE_REQUEST: u32 = 16;
-pub const ATT_READ_BY_GROUP_TYPE_RESPONSE: u32 = 17;
-pub const ATT_WRITE_REQUEST: u32 = 18;
-pub const ATT_WRITE_RESPONSE: u32 = 19;
-pub const ATT_PREPARE_WRITE_REQUEST: u32 = 22;
-pub const ATT_PREPARE_WRITE_RESPONSE: u32 = 23;
-pub const ATT_EXECUTE_WRITE_REQUEST: u32 = 24;
-pub const ATT_EXECUTE_WRITE_RESPONSE: u32 = 25;
-pub const ATT_HANDLE_VALUE_NOTIFICATION: u32 = 27;
-pub const ATT_HANDLE_VALUE_INDICATION: u32 = 29;
-pub const ATT_HANDLE_VALUE_CONFIRMATION: u32 = 30;
-pub const ATT_READ_MULTIPLE_VARIABLE_REQ: u32 = 32;
-pub const ATT_READ_MULTIPLE_VARIABLE_RSP: u32 = 33;
-pub const ATT_MULTIPLE_HANDLE_VALUE_NTF: u32 = 35;
-pub const ATT_WRITE_COMMAND: u32 = 82;
-pub const ATT_SIGNED_WRITE_COMMAND: u32 = 210;
-pub const ATT_PROPERTY_UUID128: u32 = 512;
-pub const ATT_PROPERTY_READ_PERMISSION_BIT_0: u32 = 1024;
-pub const ATT_PROPERTY_READ_PERMISSION_BIT_1: u32 = 2048;
-pub const ATT_PROPERTY_WRITE_PERMISSION_BIT_0: u32 = 1;
-pub const ATT_PROPERTY_WRITE_PERMISSION_BIT_1: u32 = 16;
-pub const ATT_PROPERTY_READ_PERMISSION_SC: u32 = 32;
-pub const ATT_PROPERTY_WRITE_PERMISSION_SC: u32 = 128;
-pub const ATT_READ_ERROR_CODE_OFFSET: u32 = 65024;
-pub const ATT_READ_RESPONSE_PENDING: u32 = 65535;
-pub const ATT_INTERNAL_WRITE_RESPONSE_PENDING: u32 = 65534;
-pub const HCI_CMD_HEADER_SIZE: u32 = 3;
-pub const HCI_ACL_HEADER_SIZE: u32 = 4;
-pub const HCI_SCO_HEADER_SIZE: u32 = 3;
-pub const HCI_EVENT_HEADER_SIZE: u32 = 2;
-pub const HCI_ISO_HEADER_SIZE: u32 = 4;
-pub const HCI_EVENT_PAYLOAD_SIZE: u32 = 255;
-pub const HCI_CMD_PAYLOAD_SIZE: u32 = 255;
-pub const HCI_ISO_PAYLOAD_SIZE: u32 = 310;
-pub const HCI_CMD_PAYLOAD_SIZE_LE: u32 = 32;
-pub const HCI_EVENT_BUFFER_SIZE: u32 = 258;
-pub const HCI_CMD_BUFFER_SIZE: u32 = 258;
-pub const HCI_ACL_BUFFER_SIZE: u32 = 1699;
-pub const HCI_INCOMING_PACKET_BUFFER_SIZE: u32 = 1699;
-pub const HCI_OUTGOING_PACKET_BUFFER_SIZE: u32 = 1699;
-pub const HCI_OUTGOING_PRE_BUFFER_SIZE: u32 = 1;
-pub const ATT_REQUEST_BUFFER_SIZE: u32 = 1695;
-pub const HCI_ISO_GROUP_ID_SINGLE_CIS: u32 = 254;
-pub const HCI_ISO_GROUP_ID_INVALID: u32 = 255;
 pub type __off_t = ::core::ffi::c_long;
 pub type __off64_t = ::core::ffi::c_long;
 #[doc = " @brief hci connection handle type"]
@@ -3481,156 +3481,6 @@ unsafe extern "C" {
         src: *const ::core::ffi::c_char,
     ) -> bool;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_tlv_t {
-    #[doc = " Get Value for Tag\n @param context\n @param tag\n @param buffer\n @param buffer_size\n @return size of value"]
-    pub get_tag: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            tag: u32,
-            buffer: *mut u8,
-            buffer_size: u32,
-        ) -> ::core::ffi::c_int,
-    >,
-    #[doc = " Store Tag\n @param context\n @param tag\n @param data\n @param data_size\n @return 0 on success"]
-    pub store_tag: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            tag: u32,
-            data: *const u8,
-            data_size: u32,
-        ) -> ::core::ffi::c_int,
-    >,
-    #[doc = " Delete Tag\n  @note it is not expected that delete operation fails, please use at least log_error in case of errors\n @param context\n @param tag"]
-    pub delete_tag:
-        ::core::option::Option<unsafe extern "C" fn(context: *mut ::core::ffi::c_void, tag: u32)>,
-}
-unsafe extern "C" {
-    #[doc = " @brief Make TLV implementation available to BTstack components via Singleton\n @note Usually called by port after BD_ADDR was retrieved from Bluetooth Controller\n @param tlv_impl\n @param tlv_context"]
-    pub fn btstack_tlv_set_instance(
-        tlv_impl: *const btstack_tlv_t,
-        tlv_context: *mut ::core::ffi::c_void,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief Get current TLV implementation. Used for bonding information, but can be used by application, too.\n @param tlv_impl\n @param tlv_context"]
-    pub fn btstack_tlv_get_instance(
-        tlv_impl: *mut *const btstack_tlv_t,
-        tlv_context: *mut *mut ::core::ffi::c_void,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief configure le device db for use with btstack tlv instance\n @param btstack_tlv_impl to use\n @param btstack_tlv_context"]
-    pub fn le_device_db_tlv_configure(
-        btstack_tlv_impl: *const btstack_tlv_t,
-        btstack_tlv_context: *mut ::core::ffi::c_void,
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_audio_context_t {
-    pub timestamp: btstack_time_us_t,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_audio_sink_t {
-    #[doc = " @brief Setup audio codec for specified samplerate and number of channels\n @param Channels (1=mono, 2=stereo)\n @param Sample rate\n @param Playback callback with sample buffer, number of samples, and, if available playback time of first sample\n @return 0 on success"]
-    pub init: ::core::option::Option<
-        unsafe extern "C" fn(
-            channels: u8,
-            samplerate: u32,
-            playback: ::core::option::Option<
-                unsafe extern "C" fn(
-                    buffer: *mut i16,
-                    num_samples: u16,
-                    timeinfo: *const btstack_audio_context_t,
-                ),
-            >,
-        ) -> ::core::ffi::c_int,
-    >,
-    #[doc = " @brief Get the current playback sample rate, may differ from the\n        specified sample rate"]
-    pub get_samplerate: ::core::option::Option<unsafe extern "C" fn() -> u32>,
-    #[doc = " @brief Set volume\n @param Volume 0..127"]
-    pub set_volume: ::core::option::Option<unsafe extern "C" fn(volume: u8)>,
-    #[doc = " @brief Start stream"]
-    pub start_stream: ::core::option::Option<unsafe extern "C" fn()>,
-    #[doc = " @brief Stop stream"]
-    pub stop_stream: ::core::option::Option<unsafe extern "C" fn()>,
-    #[doc = " @brief Close audio codec"]
-    pub close: ::core::option::Option<unsafe extern "C" fn()>,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_audio_source_t {
-    #[doc = " @brief Setup audio codec for specified samplerate and number of channels\n @param Channels (1=mono, 2=stereo)\n @param Sample rate\n @param Recording callback with sample buffer, number of samples, and, if available recording time of first sample\n @return 0 on success"]
-    pub init: ::core::option::Option<
-        unsafe extern "C" fn(
-            channels: u8,
-            samplerate: u32,
-            recording: ::core::option::Option<
-                unsafe extern "C" fn(
-                    buffer: *const i16,
-                    num_samples: u16,
-                    timeinfo: *const btstack_audio_context_t,
-                ),
-            >,
-        ) -> ::core::ffi::c_int,
-    >,
-    #[doc = " @brief Get the current recording sample rate, may differ from the\n        specified sameple rate"]
-    pub get_samplerate: ::core::option::Option<unsafe extern "C" fn() -> u32>,
-    #[doc = " @brief Set Gain\n @param Gain 0..127"]
-    pub set_gain: ::core::option::Option<unsafe extern "C" fn(gain: u8)>,
-    #[doc = " @brief Start stream"]
-    pub start_stream: ::core::option::Option<unsafe extern "C" fn()>,
-    #[doc = " @brief Stop stream"]
-    pub stop_stream: ::core::option::Option<unsafe extern "C" fn()>,
-    #[doc = " @brief Close audio codec"]
-    pub close: ::core::option::Option<unsafe extern "C" fn()>,
-}
-unsafe extern "C" {
-    #[doc = " @brief Get BTstack Audio Sink Instance\n @return btstack_audio_sink implementation"]
-    pub fn btstack_audio_sink_get_instance() -> *const btstack_audio_sink_t;
-}
-unsafe extern "C" {
-    #[doc = " @brief Get BTstack Audio Source Instance\n @return btstack_audio_source implementation"]
-    pub fn btstack_audio_source_get_instance() -> *const btstack_audio_source_t;
-}
-unsafe extern "C" {
-    #[doc = " @brief Get BTstack Audio Sink Instance\n @param btstack_audio_sink implementation"]
-    pub fn btstack_audio_sink_set_instance(audio_sink_impl: *const btstack_audio_sink_t);
-}
-unsafe extern "C" {
-    #[doc = " @brief Get BTstack Audio Source Instance\n @param btstack_audio_source implementation"]
-    pub fn btstack_audio_source_set_instance(audio_source_impl: *const btstack_audio_source_t);
-}
-unsafe extern "C" {
-    pub fn btstack_audio_portaudio_sink_get_instance() -> *const btstack_audio_sink_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_portaudio_source_get_instance() -> *const btstack_audio_source_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_alsa_sink_get_instance() -> *const btstack_audio_sink_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_embedded_sink_get_instance() -> *const btstack_audio_sink_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_embedded_source_get_instance() -> *const btstack_audio_source_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_esp32_sink_get_instance() -> *const btstack_audio_sink_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_esp32_source_get_instance() -> *const btstack_audio_source_t;
-}
-unsafe extern "C" {
-    pub fn btstack_audio_portaudio_sink_set_device(device_name: *const ::core::ffi::c_char);
-}
-unsafe extern "C" {
-    pub fn btstack_audio_portaudio_source_set_device(device_name: *const ::core::ffi::c_char);
-}
 pub const btstack_chipset_result_t_BTSTACK_CHIPSET_DONE: btstack_chipset_result_t = 0;
 pub const btstack_chipset_result_t_BTSTACK_CHIPSET_VALID_COMMAND: btstack_chipset_result_t = 1;
 pub const btstack_chipset_result_t_BTSTACK_CHIPSET_WARMSTART_REQUIRED: btstack_chipset_result_t = 2;
@@ -3655,273 +3505,6 @@ pub struct btstack_chipset_t {
     pub set_bd_addr_command:
         ::core::option::Option<unsafe extern "C" fn(addr: *mut u8, hci_cmd_buffer: *mut u8)>,
 }
-pub const btstack_lc3_frame_duration_t_BTSTACK_LC3_FRAME_DURATION_10000US:
-    btstack_lc3_frame_duration_t = 0;
-pub const btstack_lc3_frame_duration_t_BTSTACK_LC3_FRAME_DURATION_7500US:
-    btstack_lc3_frame_duration_t = 1;
-pub type btstack_lc3_frame_duration_t = ::core::ffi::c_uint;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_lc3_decoder_t {
-    #[doc = " Configure Decoder\n @param context\n @param sample_rate\n @param frame_duration\n @param octets_per_frame\n @return status"]
-    pub configure: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            sample_rate: u32,
-            frame_duration: btstack_lc3_frame_duration_t,
-            octets_per_frame: u16,
-        ) -> u8,
-    >,
-    #[doc = " Decode LC3 Frame into signed 16-bit samples\n @param context\n @param bytes\n @param BFI Bad Frame Indication flags\n @param pcm_out buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param BEC_detect Bit Error Detected flag\n @return status"]
-    pub decode_signed_16: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            bytes: *const u8,
-            BFI: u8,
-            pcm_out: *mut i16,
-            stride: u16,
-            BEC_detect: *mut u8,
-        ) -> u8,
-    >,
-    #[doc = " Decode LC3 Frame into signed 24-bit samples, sign-extended to 32-bit\n @param context\n @param bytes\n @param BFI Bad Frame Indication flags\n @param pcm_out buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param BEC_detect Bit Error Detected flag\n @return status"]
-    pub decode_signed_24: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            bytes: *const u8,
-            BFI: u8,
-            pcm_out: *mut i32,
-            stride: u16,
-            BEC_detect: *mut u8,
-        ) -> u8,
-    >,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct btstack_lc3_encoder_t {
-    #[doc = " Configure Decoder\n @param context\n @param sample_rate\n @param frame_duration\n @param octets_per_frame\n @return status"]
-    pub configure: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            sample_rate: u32,
-            frame_duration: btstack_lc3_frame_duration_t,
-            octets_per_frame: u16,
-        ) -> u8,
-    >,
-    #[doc = " Encode LC3 Frame with 16-bit signed PCM samples\n @param context\n @param pcm_in buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param bytes\n @return status"]
-    pub encode_signed_16: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            pcm_in: *const i16,
-            stride: u16,
-            bytes: *mut u8,
-        ) -> u8,
-    >,
-    #[doc = " Encode LC3 Frame with 24-bit signed PCM samples, sign-extended to 32 bit\n @param context\n @param pcm_in buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param bytes\n @return status"]
-    pub encode_signed_24: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *mut ::core::ffi::c_void,
-            pcm_in: *const i32,
-            stride: u16,
-            bytes: *mut u8,
-        ) -> u8,
-    >,
-}
-unsafe extern "C" {
-    #[doc = " @brief Map enum to ISO Interval in us\n @param frame_duration enum\n @return frame_duratoin in us or 0 for invalid frame_duration enum"]
-    pub fn btstack_lc3_frame_duration_in_us(frame_duration: btstack_lc3_frame_duration_t) -> u16;
-}
-unsafe extern "C" {
-    #[doc = " @bbrief Calculate number of samples per ISO Interval\n @param sample_rate\n @param frame_duration\n @return"]
-    pub fn btstack_lc3_samples_per_frame(
-        sample_rate: u32,
-        frame_duration: btstack_lc3_frame_duration_t,
-    ) -> u16;
-}
-unsafe extern "C" {
-    #[doc = " @brief Set path to firmware file\n @param path"]
-    pub fn btstack_chipset_realtek_set_firmware_file_path(path: *const ::core::ffi::c_char);
-}
-unsafe extern "C" {
-    #[doc = " @brief Set path to firmware folder\n @param path"]
-    pub fn btstack_chipset_realtek_set_firmware_folder_path(path: *const ::core::ffi::c_char);
-}
-unsafe extern "C" {
-    #[doc = " @brief Set path to config file\n @param path"]
-    pub fn btstack_chipset_realtek_set_config_file_path(path: *const ::core::ffi::c_char);
-}
-unsafe extern "C" {
-    #[doc = " @brief Set path to config folder\n @param path"]
-    pub fn btstack_chipset_realtek_set_config_folder_path(path: *const ::core::ffi::c_char);
-}
-unsafe extern "C" {
-    #[doc = " @brief Set USB Product id\n @param id"]
-    pub fn btstack_chipset_realtek_set_product_id(id: u16);
-}
-unsafe extern "C" {
-    #[doc = " @brief Get num USB Controllers\n @return num controllers"]
-    pub fn btstack_chipset_realtek_get_num_usb_controllers() -> u16;
-}
-unsafe extern "C" {
-    #[doc = " @brief Get Vendor/Product ID for Controller with index\n @param index\n @param out_vendor_id\n @param out_product_id"]
-    pub fn btstack_chipset_realtek_get_vendor_product_id(
-        index: u16,
-        out_vendor_id: *mut u16,
-        out_product_id: *mut u16,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief Set LMP Subversion for UART Controller"]
-    pub fn btstack_chipset_realtek_set_local_info(
-        hci_version: u8,
-        hci_revision: u16,
-        lmp_subversion: u16,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief Get Baudrate from Config File"]
-    pub fn btstack_chipset_realtek_get_config_baudrate() -> u32;
-}
-unsafe extern "C" {
-    #[doc = " Get chipset instance for REALTEK chipsets"]
-    pub fn btstack_chipset_realtek_instance() -> *const btstack_chipset_t;
-}
-unsafe extern "C" {
-    #[doc = " Get chipset instance for Zephyr Controllers"]
-    pub fn btstack_chipset_zephyr_instance() -> *const btstack_chipset_t;
-}
-pub type va_list = __builtin_va_list;
-pub const hci_dump_format_t_HCI_DUMP_INVALID: hci_dump_format_t = 0;
-pub const hci_dump_format_t_HCI_DUMP_BLUEZ: hci_dump_format_t = 1;
-pub const hci_dump_format_t_HCI_DUMP_PACKETLOGGER: hci_dump_format_t = 2;
-pub const hci_dump_format_t_HCI_DUMP_BTSNOOP: hci_dump_format_t = 3;
-pub type hci_dump_format_t = ::core::ffi::c_uint;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct hci_dump_t {
-    pub reset: ::core::option::Option<unsafe extern "C" fn()>,
-    pub log_packet: ::core::option::Option<
-        unsafe extern "C" fn(packet_type: u8, in_: u8, packet: *mut u8, len: u16),
-    >,
-    pub log_message: ::core::option::Option<
-        unsafe extern "C" fn(
-            log_level: ::core::ffi::c_int,
-            format: *const ::core::ffi::c_char,
-            argptr: *mut __va_list_tag,
-        ),
-    >,
-}
-unsafe extern "C" {
-    #[doc = " @brief Init HCI Dump\n @param hci_dump_impl - platform-specific implementation"]
-    pub fn hci_dump_init(hci_dump_impl: *const hci_dump_t);
-}
-unsafe extern "C" {
-    #[doc = " @brief Enable packet logging\n @param enabled default: true"]
-    pub fn hci_dump_enable_packet_log(enabled: bool);
-}
-unsafe extern "C" {
-    #[doc = " @brief"]
-    pub fn hci_dump_enable_log_level(log_level: ::core::ffi::c_int, enable: ::core::ffi::c_int);
-}
-unsafe extern "C" {
-    #[doc = " @brief Set max number of packets - output file might be truncated\n @param packets - number of packets to log, -1 for unlimited"]
-    pub fn hci_dump_set_max_packets(packets: ::core::ffi::c_int);
-}
-unsafe extern "C" {
-    #[doc = " @brief Dump Packet\n @param packet_type\n @param in is 1 for incoming, 0 for outoing\n @param packet\n @param len"]
-    pub fn hci_dump_packet(packet_type: u8, in_: u8, packet: *mut u8, len: u16);
-}
-unsafe extern "C" {
-    #[doc = " @brief Dump Message\n @param log_level\n @param format"]
-    pub fn hci_dump_log(log_level: ::core::ffi::c_int, format: *const ::core::ffi::c_char, ...);
-}
-unsafe extern "C" {
-    #[doc = " @brief Dump internal BTstack event\n @note only logged if ENABLE_LOG_BTSTACK_EVENTS is defined\n @param packet\n @param len"]
-    pub fn hci_dump_btstack_event(packet: *const u8, len: u16);
-}
-unsafe extern "C" {
-    #[doc = " @brief Setup header for PacketLogger format\n @param buffer\n @param tv_sec\n @param tv_us\n @param packet_type\n @param in\n @param len"]
-    pub fn hci_dump_setup_header_packetlogger(
-        buffer: *mut u8,
-        tv_sec: u32,
-        tv_us: u32,
-        packet_type: u8,
-        in_: u8,
-        len: u16,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief Setup header for BLUEZ (hcidump) format\n @param buffer\n @param tv_sec\n @param tv_us\n @param packet_type\n @param in\n @param len"]
-    pub fn hci_dump_setup_header_bluez(
-        buffer: *mut u8,
-        tv_sec: u32,
-        tv_us: u32,
-        packet_type: u8,
-        in_: u8,
-        len: u16,
-    );
-}
-unsafe extern "C" {
-    #[doc = " @brief Setup header for BT Snoop format\n @param buffer\n @param ts_usec_high upper 32-bit of 64-bit microsecond timestamp\n @param ts_usec_low  lower 2-bit of 64-bit microsecond timestamp\n @param cumulative_drops since last packet was recorded\n @param packet_type\n @param in\n @param len"]
-    pub fn hci_dump_setup_header_btsnoop(
-        buffer: *mut u8,
-        ts_usec_high: u32,
-        ts_usec_low: u32,
-        cumulative_drops: u32,
-        packet_type: u8,
-        in_: u8,
-        len: u16,
-    );
-}
-pub type FILE = _IO_FILE;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _IO_marker {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _IO_codecvt {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _IO_wide_data {
-    _unused: [u8; 0],
-}
-pub type _IO_lock_t = ::core::ffi::c_void;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _IO_FILE {
-    pub _flags: ::core::ffi::c_int,
-    pub _IO_read_ptr: *mut ::core::ffi::c_char,
-    pub _IO_read_end: *mut ::core::ffi::c_char,
-    pub _IO_read_base: *mut ::core::ffi::c_char,
-    pub _IO_write_base: *mut ::core::ffi::c_char,
-    pub _IO_write_ptr: *mut ::core::ffi::c_char,
-    pub _IO_write_end: *mut ::core::ffi::c_char,
-    pub _IO_buf_base: *mut ::core::ffi::c_char,
-    pub _IO_buf_end: *mut ::core::ffi::c_char,
-    pub _IO_save_base: *mut ::core::ffi::c_char,
-    pub _IO_backup_base: *mut ::core::ffi::c_char,
-    pub _IO_save_end: *mut ::core::ffi::c_char,
-    pub _markers: *mut _IO_marker,
-    pub _chain: *mut _IO_FILE,
-    pub _fileno: ::core::ffi::c_int,
-    pub _flags2: ::core::ffi::c_int,
-    pub _old_offset: __off_t,
-    pub _cur_column: ::core::ffi::c_ushort,
-    pub _vtable_offset: ::core::ffi::c_schar,
-    pub _shortbuf: [::core::ffi::c_char; 1usize],
-    pub _lock: *mut _IO_lock_t,
-    pub _offset: __off64_t,
-    pub _codecvt: *mut _IO_codecvt,
-    pub _wide_data: *mut _IO_wide_data,
-    pub _freeres_list: *mut _IO_FILE,
-    pub _freeres_buf: *mut ::core::ffi::c_void,
-    pub __pad5: usize,
-    pub _mode: ::core::ffi::c_int,
-    pub _unused2: [::core::ffi::c_char; 20usize],
-}
 pub const POWER_NOTIFICATION_t_POWER_WILL_SLEEP: POWER_NOTIFICATION_t = 1;
 pub const POWER_NOTIFICATION_t_POWER_WILL_WAKE_UP: POWER_NOTIFICATION_t = 2;
 pub type POWER_NOTIFICATION_t = ::core::ffi::c_uint;
@@ -3939,6 +3522,7 @@ pub struct btstack_control_t {
         ),
     >,
 }
+pub type va_list = __builtin_va_list;
 pub const HCI_POWER_MODE_HCI_POWER_OFF: HCI_POWER_MODE = 0;
 pub const HCI_POWER_MODE_HCI_POWER_ON: HCI_POWER_MODE = 1;
 pub const HCI_POWER_MODE_HCI_POWER_SLEEP: HCI_POWER_MODE = 2;
@@ -6947,6 +6531,513 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn hci_le_handle_advertisement_report(packet: *mut u8, size: u16);
+}
+unsafe extern "C" {
+    pub fn att_server_init(
+        db: *const u8,
+        read_callback: att_read_callback_t,
+        write_callback: att_write_callback_t,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Enable support for Enhanced ATT bearer\n @note Requires ENABLE_GATT_OVER_EATT\n @param num_eatt_bearers\n @param storage_buffer\n @param storage_size must be >= num_eatt_bearers * sizeof(att_server_eatt_bearer_t)\n @return status   ERROR_CODE_SUCCESS\n                  ERROR_CODE_MEMORY_CAPACITY_EXCEEDED if buffer too small or no entry in l2cap service pool\n                  L2CAP_SERVICE_ALREADY_REGISTERED if called twice"]
+    pub fn att_server_eatt_init(
+        num_eatt_bearers: u8,
+        storage_buffer: *mut u8,
+        storage_size: u16,
+    ) -> u8;
+}
+unsafe extern "C" {
+    pub fn att_server_register_packet_handler(handler: btstack_packet_handler_t);
+}
+unsafe extern "C" {
+    #[doc = " @brief register read/write callbacks for specific handle range\n @param att_service_handler_t"]
+    pub fn att_server_register_service_handler(handler: *mut att_service_handler_t);
+}
+unsafe extern "C" {
+    #[doc = " @brief Request callback when sending is possible\n @note callback might happend during call to this function\n @param callback_registration to point to callback function and context information\n @param con_handle\n @return 0 if ok, error otherwise"]
+    pub fn att_server_register_can_send_now_callback(
+        callback_registration: *mut btstack_context_callback_registration_t,
+        con_handle: hci_con_handle_t,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief Return ATT MTU\n @param con_handle\n @return mtu if ok, 0 otherwise"]
+    pub fn att_server_get_mtu(con_handle: hci_con_handle_t) -> u16;
+}
+unsafe extern "C" {
+    #[doc = " @brief Request callback when sending notifcation is possible\n @note callback might happend during call to this function\n @param callback_registration to point to callback function and context information\n @param con_handle\n @return ERROR_CODE_SUCCESS if ok, ERROR_CODE_UNKNOWN_CONNECTION_IDENTIFIER if handle unknown, and ERROR_CODE_COMMAND_DISALLOWED if callback already registered"]
+    pub fn att_server_request_to_send_notification(
+        callback_registration: *mut btstack_context_callback_registration_t,
+        con_handle: hci_con_handle_t,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief Request callback when sending indication is possible\n @note callback might happend during call to this function\n @param callback_registration to point to callback function and context information\n @param con_handle\n @return ERROR_CODE_SUCCESS if ok, ERROR_CODE_UNKNOWN_CONNECTION_IDENTIFIER if handle unknown, and ERROR_CODE_COMMAND_DISALLOWED if callback already registered"]
+    pub fn att_server_request_to_send_indication(
+        callback_registration: *mut btstack_context_callback_registration_t,
+        con_handle: hci_con_handle_t,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief notify client about attribute value change\n @param con_handle\n @param attribute_handle\n @param value\n @param value_len\n @return 0 if ok, error otherwise"]
+    pub fn att_server_notify(
+        con_handle: hci_con_handle_t,
+        attribute_handle: u16,
+        value: *const u8,
+        value_len: u16,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief notify client about multiple attribute value changes\n @param con_handle\n @param num_attributes\n @param attribute_handles[]\n @param values_data[]\n @param values_len[]\n @return 0 if ok, error otherwise"]
+    pub fn att_server_multiple_notify(
+        con_handle: hci_con_handle_t,
+        num_attributes: u8,
+        attribute_handles: *const u16,
+        values_data: *mut *const u8,
+        values_len: *const u16,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief indicate value change to client. client is supposed to reply with an indication_response\n @param con_handle\n @param attribute_handle\n @param value\n @param value_len\n @return 0 if ok, error otherwise"]
+    pub fn att_server_indicate(
+        con_handle: hci_con_handle_t,
+        attribute_handle: u16,
+        value: *const u8,
+        value_len: u16,
+    ) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " @brief response ready - called after returning ATT_READ__RESPONSE_PENDING in an att_read_callback or\n ATT_ERROR_WRITE_REQUEST_PENDING IN att_write_callback before to trigger callback again and complete the transaction\n @nore The ATT Server will retry handling the current ATT request\n @param con_handle\n @return 0 if ok, error otherwise"]
+    pub fn att_server_response_ready(con_handle: hci_con_handle_t) -> u8;
+}
+unsafe extern "C" {
+    #[doc = " De-Init ATT Server"]
+    pub fn att_server_deinit();
+}
+unsafe extern "C" {
+    #[doc = " @brief tests if a notification or indication can be send right now\n @param con_handle\n @return 1, if packet can be sent"]
+    pub fn att_server_can_send_packet_now(con_handle: hci_con_handle_t) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @brief Request emission of ATT_EVENT_CAN_SEND_NOW as soon as possible\n @note ATT_EVENT_CAN_SEND_NOW might be emitted during call to this function\n       so packet handler should be ready to handle it\n @param con_handle"]
+    pub fn att_server_request_can_send_now_event(con_handle: hci_con_handle_t);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_tlv_t {
+    #[doc = " Get Value for Tag\n @param context\n @param tag\n @param buffer\n @param buffer_size\n @return size of value"]
+    pub get_tag: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            tag: u32,
+            buffer: *mut u8,
+            buffer_size: u32,
+        ) -> ::core::ffi::c_int,
+    >,
+    #[doc = " Store Tag\n @param context\n @param tag\n @param data\n @param data_size\n @return 0 on success"]
+    pub store_tag: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            tag: u32,
+            data: *const u8,
+            data_size: u32,
+        ) -> ::core::ffi::c_int,
+    >,
+    #[doc = " Delete Tag\n  @note it is not expected that delete operation fails, please use at least log_error in case of errors\n @param context\n @param tag"]
+    pub delete_tag:
+        ::core::option::Option<unsafe extern "C" fn(context: *mut ::core::ffi::c_void, tag: u32)>,
+}
+unsafe extern "C" {
+    #[doc = " @brief Make TLV implementation available to BTstack components via Singleton\n @note Usually called by port after BD_ADDR was retrieved from Bluetooth Controller\n @param tlv_impl\n @param tlv_context"]
+    pub fn btstack_tlv_set_instance(
+        tlv_impl: *const btstack_tlv_t,
+        tlv_context: *mut ::core::ffi::c_void,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Get current TLV implementation. Used for bonding information, but can be used by application, too.\n @param tlv_impl\n @param tlv_context"]
+    pub fn btstack_tlv_get_instance(
+        tlv_impl: *mut *const btstack_tlv_t,
+        tlv_context: *mut *mut ::core::ffi::c_void,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief configure le device db for use with btstack tlv instance\n @param btstack_tlv_impl to use\n @param btstack_tlv_context"]
+    pub fn le_device_db_tlv_configure(
+        btstack_tlv_impl: *const btstack_tlv_t,
+        btstack_tlv_context: *mut ::core::ffi::c_void,
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_audio_context_t {
+    pub timestamp: btstack_time_us_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_audio_sink_t {
+    #[doc = " @brief Setup audio codec for specified samplerate and number of channels\n @param Channels (1=mono, 2=stereo)\n @param Sample rate\n @param Playback callback with sample buffer, number of samples, and, if available playback time of first sample\n @return 0 on success"]
+    pub init: ::core::option::Option<
+        unsafe extern "C" fn(
+            channels: u8,
+            samplerate: u32,
+            playback: ::core::option::Option<
+                unsafe extern "C" fn(
+                    buffer: *mut i16,
+                    num_samples: u16,
+                    timeinfo: *const btstack_audio_context_t,
+                ),
+            >,
+        ) -> ::core::ffi::c_int,
+    >,
+    #[doc = " @brief Get the current playback sample rate, may differ from the\n        specified sample rate"]
+    pub get_samplerate: ::core::option::Option<unsafe extern "C" fn() -> u32>,
+    #[doc = " @brief Set volume\n @param Volume 0..127"]
+    pub set_volume: ::core::option::Option<unsafe extern "C" fn(volume: u8)>,
+    #[doc = " @brief Start stream"]
+    pub start_stream: ::core::option::Option<unsafe extern "C" fn()>,
+    #[doc = " @brief Stop stream"]
+    pub stop_stream: ::core::option::Option<unsafe extern "C" fn()>,
+    #[doc = " @brief Close audio codec"]
+    pub close: ::core::option::Option<unsafe extern "C" fn()>,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_audio_source_t {
+    #[doc = " @brief Setup audio codec for specified samplerate and number of channels\n @param Channels (1=mono, 2=stereo)\n @param Sample rate\n @param Recording callback with sample buffer, number of samples, and, if available recording time of first sample\n @return 0 on success"]
+    pub init: ::core::option::Option<
+        unsafe extern "C" fn(
+            channels: u8,
+            samplerate: u32,
+            recording: ::core::option::Option<
+                unsafe extern "C" fn(
+                    buffer: *const i16,
+                    num_samples: u16,
+                    timeinfo: *const btstack_audio_context_t,
+                ),
+            >,
+        ) -> ::core::ffi::c_int,
+    >,
+    #[doc = " @brief Get the current recording sample rate, may differ from the\n        specified sameple rate"]
+    pub get_samplerate: ::core::option::Option<unsafe extern "C" fn() -> u32>,
+    #[doc = " @brief Set Gain\n @param Gain 0..127"]
+    pub set_gain: ::core::option::Option<unsafe extern "C" fn(gain: u8)>,
+    #[doc = " @brief Start stream"]
+    pub start_stream: ::core::option::Option<unsafe extern "C" fn()>,
+    #[doc = " @brief Stop stream"]
+    pub stop_stream: ::core::option::Option<unsafe extern "C" fn()>,
+    #[doc = " @brief Close audio codec"]
+    pub close: ::core::option::Option<unsafe extern "C" fn()>,
+}
+unsafe extern "C" {
+    #[doc = " @brief Get BTstack Audio Sink Instance\n @return btstack_audio_sink implementation"]
+    pub fn btstack_audio_sink_get_instance() -> *const btstack_audio_sink_t;
+}
+unsafe extern "C" {
+    #[doc = " @brief Get BTstack Audio Source Instance\n @return btstack_audio_source implementation"]
+    pub fn btstack_audio_source_get_instance() -> *const btstack_audio_source_t;
+}
+unsafe extern "C" {
+    #[doc = " @brief Get BTstack Audio Sink Instance\n @param btstack_audio_sink implementation"]
+    pub fn btstack_audio_sink_set_instance(audio_sink_impl: *const btstack_audio_sink_t);
+}
+unsafe extern "C" {
+    #[doc = " @brief Get BTstack Audio Source Instance\n @param btstack_audio_source implementation"]
+    pub fn btstack_audio_source_set_instance(audio_source_impl: *const btstack_audio_source_t);
+}
+unsafe extern "C" {
+    pub fn btstack_audio_portaudio_sink_get_instance() -> *const btstack_audio_sink_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_portaudio_source_get_instance() -> *const btstack_audio_source_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_alsa_sink_get_instance() -> *const btstack_audio_sink_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_embedded_sink_get_instance() -> *const btstack_audio_sink_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_embedded_source_get_instance() -> *const btstack_audio_source_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_esp32_sink_get_instance() -> *const btstack_audio_sink_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_esp32_source_get_instance() -> *const btstack_audio_source_t;
+}
+unsafe extern "C" {
+    pub fn btstack_audio_portaudio_sink_set_device(device_name: *const ::core::ffi::c_char);
+}
+unsafe extern "C" {
+    pub fn btstack_audio_portaudio_source_set_device(device_name: *const ::core::ffi::c_char);
+}
+pub const btstack_lc3_frame_duration_t_BTSTACK_LC3_FRAME_DURATION_10000US:
+    btstack_lc3_frame_duration_t = 0;
+pub const btstack_lc3_frame_duration_t_BTSTACK_LC3_FRAME_DURATION_7500US:
+    btstack_lc3_frame_duration_t = 1;
+pub type btstack_lc3_frame_duration_t = ::core::ffi::c_uint;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_lc3_decoder_t {
+    #[doc = " Configure Decoder\n @param context\n @param sample_rate\n @param frame_duration\n @param octets_per_frame\n @return status"]
+    pub configure: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            sample_rate: u32,
+            frame_duration: btstack_lc3_frame_duration_t,
+            octets_per_frame: u16,
+        ) -> u8,
+    >,
+    #[doc = " Decode LC3 Frame into signed 16-bit samples\n @param context\n @param bytes\n @param BFI Bad Frame Indication flags\n @param pcm_out buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param BEC_detect Bit Error Detected flag\n @return status"]
+    pub decode_signed_16: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            bytes: *const u8,
+            BFI: u8,
+            pcm_out: *mut i16,
+            stride: u16,
+            BEC_detect: *mut u8,
+        ) -> u8,
+    >,
+    #[doc = " Decode LC3 Frame into signed 24-bit samples, sign-extended to 32-bit\n @param context\n @param bytes\n @param BFI Bad Frame Indication flags\n @param pcm_out buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param BEC_detect Bit Error Detected flag\n @return status"]
+    pub decode_signed_24: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            bytes: *const u8,
+            BFI: u8,
+            pcm_out: *mut i32,
+            stride: u16,
+            BEC_detect: *mut u8,
+        ) -> u8,
+    >,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct btstack_lc3_encoder_t {
+    #[doc = " Configure Decoder\n @param context\n @param sample_rate\n @param frame_duration\n @param octets_per_frame\n @return status"]
+    pub configure: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            sample_rate: u32,
+            frame_duration: btstack_lc3_frame_duration_t,
+            octets_per_frame: u16,
+        ) -> u8,
+    >,
+    #[doc = " Encode LC3 Frame with 16-bit signed PCM samples\n @param context\n @param pcm_in buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param bytes\n @return status"]
+    pub encode_signed_16: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            pcm_in: *const i16,
+            stride: u16,
+            bytes: *mut u8,
+        ) -> u8,
+    >,
+    #[doc = " Encode LC3 Frame with 24-bit signed PCM samples, sign-extended to 32 bit\n @param context\n @param pcm_in buffer for decoded PCM samples\n @param stride count between two consecutive samples\n @param bytes\n @return status"]
+    pub encode_signed_24: ::core::option::Option<
+        unsafe extern "C" fn(
+            context: *mut ::core::ffi::c_void,
+            pcm_in: *const i32,
+            stride: u16,
+            bytes: *mut u8,
+        ) -> u8,
+    >,
+}
+unsafe extern "C" {
+    #[doc = " @brief Map enum to ISO Interval in us\n @param frame_duration enum\n @return frame_duratoin in us or 0 for invalid frame_duration enum"]
+    pub fn btstack_lc3_frame_duration_in_us(frame_duration: btstack_lc3_frame_duration_t) -> u16;
+}
+unsafe extern "C" {
+    #[doc = " @bbrief Calculate number of samples per ISO Interval\n @param sample_rate\n @param frame_duration\n @return"]
+    pub fn btstack_lc3_samples_per_frame(
+        sample_rate: u32,
+        frame_duration: btstack_lc3_frame_duration_t,
+    ) -> u16;
+}
+unsafe extern "C" {
+    #[doc = " @brief Set path to firmware file\n @param path"]
+    pub fn btstack_chipset_realtek_set_firmware_file_path(path: *const ::core::ffi::c_char);
+}
+unsafe extern "C" {
+    #[doc = " @brief Set path to firmware folder\n @param path"]
+    pub fn btstack_chipset_realtek_set_firmware_folder_path(path: *const ::core::ffi::c_char);
+}
+unsafe extern "C" {
+    #[doc = " @brief Set path to config file\n @param path"]
+    pub fn btstack_chipset_realtek_set_config_file_path(path: *const ::core::ffi::c_char);
+}
+unsafe extern "C" {
+    #[doc = " @brief Set path to config folder\n @param path"]
+    pub fn btstack_chipset_realtek_set_config_folder_path(path: *const ::core::ffi::c_char);
+}
+unsafe extern "C" {
+    #[doc = " @brief Set USB Product id\n @param id"]
+    pub fn btstack_chipset_realtek_set_product_id(id: u16);
+}
+unsafe extern "C" {
+    #[doc = " @brief Get num USB Controllers\n @return num controllers"]
+    pub fn btstack_chipset_realtek_get_num_usb_controllers() -> u16;
+}
+unsafe extern "C" {
+    #[doc = " @brief Get Vendor/Product ID for Controller with index\n @param index\n @param out_vendor_id\n @param out_product_id"]
+    pub fn btstack_chipset_realtek_get_vendor_product_id(
+        index: u16,
+        out_vendor_id: *mut u16,
+        out_product_id: *mut u16,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Set LMP Subversion for UART Controller"]
+    pub fn btstack_chipset_realtek_set_local_info(
+        hci_version: u8,
+        hci_revision: u16,
+        lmp_subversion: u16,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Get Baudrate from Config File"]
+    pub fn btstack_chipset_realtek_get_config_baudrate() -> u32;
+}
+unsafe extern "C" {
+    #[doc = " Get chipset instance for REALTEK chipsets"]
+    pub fn btstack_chipset_realtek_instance() -> *const btstack_chipset_t;
+}
+unsafe extern "C" {
+    #[doc = " Get chipset instance for Zephyr Controllers"]
+    pub fn btstack_chipset_zephyr_instance() -> *const btstack_chipset_t;
+}
+pub const hci_dump_format_t_HCI_DUMP_INVALID: hci_dump_format_t = 0;
+pub const hci_dump_format_t_HCI_DUMP_BLUEZ: hci_dump_format_t = 1;
+pub const hci_dump_format_t_HCI_DUMP_PACKETLOGGER: hci_dump_format_t = 2;
+pub const hci_dump_format_t_HCI_DUMP_BTSNOOP: hci_dump_format_t = 3;
+pub type hci_dump_format_t = ::core::ffi::c_uint;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct hci_dump_t {
+    pub reset: ::core::option::Option<unsafe extern "C" fn()>,
+    pub log_packet: ::core::option::Option<
+        unsafe extern "C" fn(packet_type: u8, in_: u8, packet: *mut u8, len: u16),
+    >,
+    pub log_message: ::core::option::Option<
+        unsafe extern "C" fn(
+            log_level: ::core::ffi::c_int,
+            format: *const ::core::ffi::c_char,
+            argptr: *mut __va_list_tag,
+        ),
+    >,
+}
+unsafe extern "C" {
+    #[doc = " @brief Init HCI Dump\n @param hci_dump_impl - platform-specific implementation"]
+    pub fn hci_dump_init(hci_dump_impl: *const hci_dump_t);
+}
+unsafe extern "C" {
+    #[doc = " @brief Enable packet logging\n @param enabled default: true"]
+    pub fn hci_dump_enable_packet_log(enabled: bool);
+}
+unsafe extern "C" {
+    #[doc = " @brief"]
+    pub fn hci_dump_enable_log_level(log_level: ::core::ffi::c_int, enable: ::core::ffi::c_int);
+}
+unsafe extern "C" {
+    #[doc = " @brief Set max number of packets - output file might be truncated\n @param packets - number of packets to log, -1 for unlimited"]
+    pub fn hci_dump_set_max_packets(packets: ::core::ffi::c_int);
+}
+unsafe extern "C" {
+    #[doc = " @brief Dump Packet\n @param packet_type\n @param in is 1 for incoming, 0 for outoing\n @param packet\n @param len"]
+    pub fn hci_dump_packet(packet_type: u8, in_: u8, packet: *mut u8, len: u16);
+}
+unsafe extern "C" {
+    #[doc = " @brief Dump Message\n @param log_level\n @param format"]
+    pub fn hci_dump_log(log_level: ::core::ffi::c_int, format: *const ::core::ffi::c_char, ...);
+}
+unsafe extern "C" {
+    #[doc = " @brief Dump internal BTstack event\n @note only logged if ENABLE_LOG_BTSTACK_EVENTS is defined\n @param packet\n @param len"]
+    pub fn hci_dump_btstack_event(packet: *const u8, len: u16);
+}
+unsafe extern "C" {
+    #[doc = " @brief Setup header for PacketLogger format\n @param buffer\n @param tv_sec\n @param tv_us\n @param packet_type\n @param in\n @param len"]
+    pub fn hci_dump_setup_header_packetlogger(
+        buffer: *mut u8,
+        tv_sec: u32,
+        tv_us: u32,
+        packet_type: u8,
+        in_: u8,
+        len: u16,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Setup header for BLUEZ (hcidump) format\n @param buffer\n @param tv_sec\n @param tv_us\n @param packet_type\n @param in\n @param len"]
+    pub fn hci_dump_setup_header_bluez(
+        buffer: *mut u8,
+        tv_sec: u32,
+        tv_us: u32,
+        packet_type: u8,
+        in_: u8,
+        len: u16,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @brief Setup header for BT Snoop format\n @param buffer\n @param ts_usec_high upper 32-bit of 64-bit microsecond timestamp\n @param ts_usec_low  lower 2-bit of 64-bit microsecond timestamp\n @param cumulative_drops since last packet was recorded\n @param packet_type\n @param in\n @param len"]
+    pub fn hci_dump_setup_header_btsnoop(
+        buffer: *mut u8,
+        ts_usec_high: u32,
+        ts_usec_low: u32,
+        cumulative_drops: u32,
+        packet_type: u8,
+        in_: u8,
+        len: u16,
+    );
+}
+pub type FILE = _IO_FILE;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_marker {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_codecvt {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_wide_data {
+    _unused: [u8; 0],
+}
+pub type _IO_lock_t = ::core::ffi::c_void;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_FILE {
+    pub _flags: ::core::ffi::c_int,
+    pub _IO_read_ptr: *mut ::core::ffi::c_char,
+    pub _IO_read_end: *mut ::core::ffi::c_char,
+    pub _IO_read_base: *mut ::core::ffi::c_char,
+    pub _IO_write_base: *mut ::core::ffi::c_char,
+    pub _IO_write_ptr: *mut ::core::ffi::c_char,
+    pub _IO_write_end: *mut ::core::ffi::c_char,
+    pub _IO_buf_base: *mut ::core::ffi::c_char,
+    pub _IO_buf_end: *mut ::core::ffi::c_char,
+    pub _IO_save_base: *mut ::core::ffi::c_char,
+    pub _IO_backup_base: *mut ::core::ffi::c_char,
+    pub _IO_save_end: *mut ::core::ffi::c_char,
+    pub _markers: *mut _IO_marker,
+    pub _chain: *mut _IO_FILE,
+    pub _fileno: ::core::ffi::c_int,
+    pub _flags2: ::core::ffi::c_int,
+    pub _old_offset: __off_t,
+    pub _cur_column: ::core::ffi::c_ushort,
+    pub _vtable_offset: ::core::ffi::c_schar,
+    pub _shortbuf: [::core::ffi::c_char; 1usize],
+    pub _lock: *mut _IO_lock_t,
+    pub _offset: __off64_t,
+    pub _codecvt: *mut _IO_codecvt,
+    pub _wide_data: *mut _IO_wide_data,
+    pub _freeres_list: *mut _IO_FILE,
+    pub _freeres_buf: *mut ::core::ffi::c_void,
+    pub __pad5: usize,
+    pub _mode: ::core::ffi::c_int,
+    pub _unused2: [::core::ffi::c_char; 20usize],
 }
 pub const gatt_client_state_t_P_READY: gatt_client_state_t = 0;
 pub const gatt_client_state_t_P_W2_EMIT_QUERY_COMPLETE_EVENT: gatt_client_state_t = 1;
