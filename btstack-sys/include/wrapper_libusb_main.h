@@ -3,6 +3,7 @@
 
 #include "btstack_config.h"
 
+#include "ble/att_server.h"
 #include "ble/le_device_db_tlv.h"
 #include "bluetooth_company_id.h"
 #include "btstack_audio.h"
