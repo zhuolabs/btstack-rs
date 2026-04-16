@@ -11,6 +11,3 @@ pub(crate) const USB_MAX_PATH_LEN: usize = 7;
 pub(crate) const EVENT_IN_FLIGHT: usize = 3;
 pub(crate) const ACL_IN_FLIGHT: usize = 3;
 pub(crate) const ACL_OUT_IN_FLIGHT: usize = 4;
-
-pub(crate) const ALT_SETTING_8_BIT: [u8; 3] = [1, 2, 3];
-pub(crate) const ALT_SETTING_16_BIT: [u8; 3] = [2, 4, 5];

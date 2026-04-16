@@ -21,6 +21,10 @@ pub(crate) fn spawn_event_reader(
     endpoint: u8,
     stop: Arc<AtomicBool>,
 ) -> JoinHandle<()> {
+    // Corresponds to event transfer setup/completion handling in `usb_open`,
+    // `async_callback`, and `handle_completed_transfer` for event endpoint in
+    // `platform/libusb/hci_transport_h2_libusb.c`.
+    // Difference: uses a dedicated Rust thread and `nusb` queue polling.
     thread::spawn(move || {
         let mut queue = interface.interrupt_in_queue(endpoint);
         for _ in 0..EVENT_IN_FLIGHT {
@@ -57,6 +61,10 @@ pub(crate) fn spawn_acl_reader(
     endpoint: u8,
     stop: Arc<AtomicBool>,
 ) -> JoinHandle<()> {
+    // Corresponds to ACL IN transfer setup/completion handling in `usb_open`,
+    // `async_callback`, and `handle_completed_transfer` for ACL IN endpoint in
+    // `platform/libusb/hci_transport_h2_libusb.c`.
+    // Difference: uses a dedicated Rust thread and `nusb` queue polling.
     thread::spawn(move || {
         let mut queue = interface.bulk_in_queue(endpoint);
         for _ in 0..ACL_IN_FLIGHT {
@@ -95,6 +103,10 @@ pub(crate) fn spawn_writer(
     pending: Arc<AtomicUsize>,
     receiver: Receiver<OutgoingPacket>,
 ) -> JoinHandle<()> {
+    // Corresponds to ACL OUT + command sending behavior split across
+    // `usb_send_cmd_packet`, `usb_send_acl_packet`, callback ack signaling,
+    // and transfer completion processing in `platform/libusb/hci_transport_h2_libusb.c`.
+    // Difference: one Rust writer thread multiplexes command control transfers and bulk OUT queue.
     thread::spawn(move || {
         let mut acl_out_queue = interface.bulk_out_queue(acl_out_endpoint);
         let mut in_flight_out = 0usize;
@@ -151,6 +163,8 @@ pub(crate) fn spawn_writer(
 }
 
 fn send_hci_command(interface: &Interface, packet: &[u8]) -> Result<(), ()> {
+    // Corresponds to `usb_send_cmd_packet` (control transfer path) in
+    // `platform/libusb/hci_transport_h2_libusb.c`.
     let transfer = interface.control_out(ControlOut {
         control_type: ControlType::Class,
         recipient: Recipient::Device,
@@ -164,6 +178,8 @@ fn send_hci_command(interface: &Interface, packet: &[u8]) -> Result<(), ()> {
 }
 
 fn cancel_and_drain_reader_queue(queue: &mut Queue<RequestBuffer>) {
+    // Corresponds to transfer cancellation/drain work done during `usb_close`
+    // in `platform/libusb/hci_transport_h2_libusb.c`.
     queue.cancel_all();
     while queue.pending() > 0 {
         let _ = block_on(queue.next_complete());
@@ -171,11 +187,15 @@ fn cancel_and_drain_reader_queue(queue: &mut Queue<RequestBuffer>) {
 }
 
 pub(crate) fn emit_transport_packet_sent() {
+    // Corresponds to `signal_acknowledge` in
+    // `platform/libusb/hci_transport_h2_libusb.c`.
     let event = [HCI_EVENT_TRANSPORT_PACKET_SENT as u8, 0];
     emit_packet(HCI_EVENT_PACKET as u8, &event);
 }
 
 pub(crate) fn emit_usb_info(device: &nusb::DeviceInfo, path: &[u8]) {
+    // Corresponds to `hci_transport_h2_libusb_emit_usb_info` in
+    // `platform/libusb/hci_transport_h2_libusb.c`.
     let mut event = Vec::with_capacity(8 + path.len());
     event.push(HCI_EVENT_TRANSPORT_USB_INFO as u8);
     event.push((6 + path.len()) as u8);
@@ -188,6 +208,9 @@ pub(crate) fn emit_usb_info(device: &nusb::DeviceInfo, path: &[u8]) {
 }
 
 pub(crate) fn emit_packet(packet_type: u8, packet: &[u8]) {
+    // Corresponds to direct `packet_handler(...)` dispatch in multiple code paths
+    // of `platform/libusb/hci_transport_h2_libusb.c`.
+    // Difference: clones data into owned `Vec<u8>` before calling handler.
     let handler = {
         let state = STATE.lock().expect("state lock poisoned");
         state.packet_handler
@@ -200,6 +223,9 @@ pub(crate) fn emit_packet(packet_type: u8, packet: &[u8]) {
 }
 
 pub(crate) fn try_reserve_send_slot(pending: &AtomicUsize, queue_depth: usize) -> bool {
+    // Corresponds conceptually to transfer list availability checks like
+    // `usb_transfer_list_empty` / acquire flow in C.
+    // Difference: atomic counter + bounded Rust channel enforce queue depth.
     let mut current = pending.load(Ordering::Relaxed);
     loop {
         if current >= queue_depth {

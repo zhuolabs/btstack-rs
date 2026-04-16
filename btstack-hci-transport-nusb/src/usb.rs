@@ -1,10 +1,11 @@
-use crate::constants::{ALT_SETTING_16_BIT, ALT_SETTING_8_BIT, USB_MAX_PATH_LEN};
-use crate::types::{EndpointConfig, ScoState, UsbSelection};
+use crate::constants::USB_MAX_PATH_LEN;
+use crate::types::{EndpointConfig, UsbSelection};
 use nusb::transfer::{Direction, EndpointType};
 use nusb::Interface;
-use std::os::raw::c_int;
-use std::sync::{Arc, Mutex};
 
+/// Corresponds to `scan_for_bt_device`/`try_open_device` filtering logic in
+/// `platform/libusb/hci_transport_h2_libusb.c`.
+/// Difference: this Rust implementation uses `nusb::list_devices()` iterator APIs.
 pub(crate) fn select_device(selection: UsbSelection) -> Option<nusb::DeviceInfo> {
     let devices = nusb::list_devices().ok()?;
     devices
@@ -12,6 +13,9 @@ pub(crate) fn select_device(selection: UsbSelection) -> Option<nusb::DeviceInfo>
         .find(|device| is_candidate_device(device, &selection))
 }
 
+/// Corresponds to USB selector checks in `usb_open` and known-device scanning in
+/// `platform/libusb/hci_transport_h2_libusb.c`.
+/// Difference: matches optional `vendor_id`/`product_id`/`bus_number`/`path` from Rust config.
 fn is_candidate_device(device: &nusb::DeviceInfo, selection: &UsbSelection) -> bool {
     if let Some(vendor_id) = selection.vendor_id {
         if device.vendor_id() != vendor_id {
@@ -42,16 +46,19 @@ fn is_candidate_device(device: &nusb::DeviceInfo, selection: &UsbSelection) -> b
         || is_bluetooth_device(device)
 }
 
+/// Corresponds to `is_known_bt_device` fallback behavior in
+/// `platform/libusb/hci_transport_h2_libusb.c`.
+/// Difference: detects by Bluetooth interface class/subclass/protocol instead of static VID/PID table.
 fn is_bluetooth_device(device: &nusb::DeviceInfo) -> bool {
     device.interfaces().any(|interface| {
         interface.class() == 0xE0 && interface.subclass() == 0x01 && interface.protocol() == 0x01
     })
 }
 
-pub(crate) fn detect_endpoints(
-    interface: &Interface,
-    sco_interface: Option<&Interface>,
-) -> EndpointConfig {
+/// Corresponds to endpoint discovery in `scan_for_bt_endpoints` in
+/// `platform/libusb/hci_transport_h2_libusb.c`.
+/// Difference: only event/ACL endpoints are discovered; SCO endpoints are intentionally ignored.
+pub(crate) fn detect_endpoints(interface: &Interface) -> EndpointConfig {
     let mut config = EndpointConfig::default();
     let mut found_event = false;
     let mut found_acl_in = false;
@@ -81,25 +88,12 @@ pub(crate) fn detect_endpoints(
         }
     }
 
-    if let Some(sco_interface) = sco_interface {
-        for alt in sco_interface.descriptors() {
-            for endpoint in alt.endpoints() {
-                match (endpoint.transfer_type(), endpoint.direction()) {
-                    (EndpointType::Isochronous, Direction::In) if config.sco_in.is_none() => {
-                        config.sco_in = Some(endpoint.address());
-                    }
-                    (EndpointType::Isochronous, Direction::Out) if config.sco_out.is_none() => {
-                        config.sco_out = Some(endpoint.address());
-                    }
-                    _ => {}
-                }
-            }
-        }
-    }
-
     config
 }
 
+/// Corresponds to the `libusb_get_port_numbers` + USB path reporting behavior in
+/// `prepare_device` and `hci_transport_h2_libusb_emit_usb_info`.
+/// Difference: Linux/Android parse from `sysfs_path()` name via `nusb`.
 pub(crate) fn usb_path(device: &nusb::DeviceInfo) -> Option<Vec<u8>> {
     #[cfg(any(target_os = "linux", target_os = "android"))]
     {
@@ -113,6 +107,8 @@ pub(crate) fn usb_path(device: &nusb::DeviceInfo) -> Option<Vec<u8>> {
     }
 }
 
+/// Rust helper for `usb_path`.
+/// Corresponds conceptually to how `libusb_get_port_numbers` yields hierarchical USB ports.
 fn parse_usb_path(sysfs_name: &str) -> Option<Vec<u8>> {
     let (_, chain) = sysfs_name.split_once('-')?;
     let mut path = Vec::new();
@@ -124,39 +120,4 @@ fn parse_usb_path(sysfs_name: &str) -> Option<Vec<u8>> {
         return None;
     }
     Some(path)
-}
-
-pub(crate) fn endpoint_sco_state(
-    sco_interface: Option<&Interface>,
-    endpoints: &EndpointConfig,
-) -> Option<Arc<Mutex<ScoState>>> {
-    let Some(interface) = sco_interface else {
-        return None;
-    };
-    if endpoints.sco_in.is_none() && endpoints.sco_out.is_none() {
-        return None;
-    }
-    Some(Arc::new(Mutex::new(ScoState {
-        interface: interface.clone(),
-        voice_setting: 0,
-        num_connections: 0,
-        sco_in_endpoint: endpoints.sco_in,
-        sco_out_endpoint: endpoints.sco_out,
-    })))
-}
-
-pub(crate) fn sco_alt_setting(voice_setting: u16, num_connections: c_int) -> u8 {
-    if num_connections <= 0 {
-        return 0;
-    }
-    let index = (num_connections as usize).saturating_sub(1);
-    if index >= ALT_SETTING_8_BIT.len() {
-        return 0;
-    }
-    let is_16_bit = (voice_setting & 0x0020) != 0;
-    if is_16_bit {
-        ALT_SETTING_16_BIT[index]
-    } else {
-        ALT_SETTING_8_BIT[index]
-    }
 }

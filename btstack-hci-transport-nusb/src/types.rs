@@ -1,9 +1,7 @@
 use crate::constants::{DEFAULT_ACL_IN_EP, DEFAULT_ACL_OUT_EP, DEFAULT_EVENT_EP, USB_MAX_PATH_LEN};
-use nusb::Interface;
-use std::os::raw::c_int;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::mpsc::SyncSender;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::thread::JoinHandle;
 
 #[repr(C)]
@@ -30,18 +28,18 @@ pub(crate) struct EndpointConfig {
     pub(crate) event_in: u8,
     pub(crate) acl_in: u8,
     pub(crate) acl_out: u8,
-    pub(crate) sco_in: Option<u8>,
-    pub(crate) sco_out: Option<u8>,
 }
 
 impl Default for EndpointConfig {
+    /// Corresponds to default endpoint addresses initialized in `usb_open` and
+    /// endpoint scan fallback behavior in `scan_for_bt_endpoints` within
+    /// `platform/libusb/hci_transport_h2_libusb.c`.
+    /// Difference: SCO defaults were removed because SCO is unsupported in this transport.
     fn default() -> Self {
         Self {
             event_in: DEFAULT_EVENT_EP,
             acl_in: DEFAULT_ACL_IN_EP,
             acl_out: DEFAULT_ACL_OUT_EP,
-            sco_in: None,
-            sco_out: None,
         }
     }
 }
@@ -53,21 +51,12 @@ pub(crate) struct ActiveTransport {
     pub(crate) reader_threads: Vec<JoinHandle<()>>,
     pub(crate) writer_thread: JoinHandle<()>,
     pub(crate) outgoing_queue_depth: usize,
-    pub(crate) sco: Option<Arc<Mutex<ScoState>>>,
 }
 
 pub(crate) enum OutgoingPacket {
     Command(Vec<u8>),
     Acl(Vec<u8>),
     Iso(Vec<u8>),
-}
-
-pub(crate) struct ScoState {
-    pub(crate) interface: Interface,
-    pub(crate) voice_setting: u16,
-    pub(crate) num_connections: c_int,
-    pub(crate) sco_in_endpoint: Option<u8>,
-    pub(crate) sco_out_endpoint: Option<u8>,
 }
 
 #[derive(Default)]
