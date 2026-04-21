@@ -3,6 +3,8 @@
 use std::collections::HashMap;
 use std::ffi::c_int;
 
+use crate::runtime::BtstackRuntime;
+
 use btstack_sys::{
     att_read_callback_handle_blob, att_server_init, att_server_register_packet_handler,
     btstack_packet_callback_registration_t, gap_advertisements_enable, gap_advertisements_set_data,
@@ -179,15 +181,29 @@ struct RuntimeState {
 
 static mut RUNTIME: Option<RuntimeState> = None;
 
-pub struct GattPeripheralServer {
-    initialized: bool,
+/// High-level local GATT server bound to a running [`BtstackRuntime`].
+///
+/// Lifecycle requirements:
+/// - Call [`BtstackRuntime::start`](crate::runtime::BtstackRuntime::start) first.
+/// - Create the server with [`GattPeripheralServer::new`].
+/// - Call [`start_advertising`](Self::start_advertising) after successful construction.
+///
+/// Shutdown behavior:
+/// - [`stop`](Self::stop) disables advertisements only.
+/// - Dropping the runtime owner triggers BTstack run-loop shutdown; this server does
+///   not own global BTstack teardown.
+pub struct GattPeripheralServer<'runtime> {
+    _runtime: &'runtime BtstackRuntime,
 }
 
-impl GattPeripheralServer {
+impl<'runtime> GattPeripheralServer<'runtime> {
     /// Initialize ATT server wiring and build internal metadata from public specs.
     ///
-    /// This must be called once before `start_advertising`.
-    pub fn init(spec: GattPeripheralSpec) -> Result<Self, GattPeripheralError> {
+    /// This can only be called with an active [`BtstackRuntime`] owner.
+    pub fn new(
+        runtime: &'runtime BtstackRuntime,
+        spec: GattPeripheralSpec,
+    ) -> Result<Self, GattPeripheralError> {
         unsafe {
             if RUNTIME.is_some() {
                 return Err(GattPeripheralError::ServerAlreadyInitialized);
@@ -204,7 +220,7 @@ impl GattPeripheralServer {
 
             // Resolve all service/characteristic metadata immediately after ATT init.
             // This keeps raw handle usage fully internal to the server implementation.
-            let runtime = RuntimeState {
+            let runtime_state = RuntimeState {
                 characteristics_by_value_handle: resolve_characteristics(&spec.services)?,
                 ccc_to_value_handle: HashMap::new(),
                 notification_enabled: HashMap::new(),
@@ -218,7 +234,7 @@ impl GattPeripheralServer {
                 },
             };
 
-            RUNTIME = Some(runtime);
+            RUNTIME = Some(runtime_state);
             let runtime_ref = RUNTIME.as_mut().expect("runtime must be initialized");
 
             // Precompute CCC -> value-handle lookup table once.
@@ -237,15 +253,11 @@ impl GattPeripheralServer {
             hci_add_event_handler(std::ptr::addr_of_mut!(runtime_ref.hci_event_cb));
         }
 
-        Ok(Self { initialized: true })
+        Ok(Self { _runtime: runtime })
     }
 
     /// Configure and enable BLE advertisements for the current peripheral.
     pub fn start_advertising(&self) {
-        if !self.initialized {
-            return;
-        }
-
         unsafe {
             if let Some(runtime) = RUNTIME.as_mut() {
                 let mut null_addr = [0u8; 6];
@@ -269,16 +281,20 @@ impl GattPeripheralServer {
 
     /// Stop BLE advertisements.
     pub fn stop(&self) {
-        if !self.initialized {
-            return;
-        }
-
         unsafe {
             gap_advertisements_enable(0);
         }
     }
 }
 
+impl<'runtime> Drop for GattPeripheralServer<'runtime> {
+    fn drop(&mut self) {
+        unsafe {
+            gap_advertisements_enable(0);
+            RUNTIME = None;
+        }
+    }
+}
 unsafe fn resolve_characteristics(
     services: &[GattServiceSpec],
 ) -> Result<HashMap<u16, RuntimeCharacteristic>, GattPeripheralError> {
