@@ -5,5 +5,6 @@
 
 pub mod gatt_counter;
 pub mod peripheral;
+pub mod runtime;
 
 pub mod gatt_counter_main;
