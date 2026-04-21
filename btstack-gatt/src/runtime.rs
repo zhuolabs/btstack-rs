@@ -60,6 +60,17 @@ pub struct BtstackRuntime {
 impl BtstackRuntime {
     /// Initializes BTstack globals and starts the dedicated run-loop thread.
     pub fn start() -> Result<Self, BtstackRuntimeError> {
+        Self::start_with_init(|| {})
+    }
+
+    /// Initializes BTstack globals and starts the dedicated run-loop thread.
+    ///
+    /// `init` runs on the dedicated BTstack run-loop thread immediately before
+    /// `btstack_run_loop_execute()` starts dispatching events.
+    pub fn start_with_init<F>(init: F) -> Result<Self, BtstackRuntimeError>
+    where
+        F: FnOnce() + Send + 'static,
+    {
         if RUNTIME_ACTIVE.swap(true, Ordering::SeqCst) {
             return Err(BtstackRuntimeError::AlreadyStarted);
         }
@@ -70,7 +81,8 @@ impl BtstackRuntime {
             hci_init(hci_transport_nusb_instance(), std::ptr::null::<c_void>());
         }
 
-        let loop_thread = thread::spawn(|| unsafe {
+        let loop_thread = thread::spawn(move || unsafe {
+            init();
             btstack_run_loop_execute();
         });
 
