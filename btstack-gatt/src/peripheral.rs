@@ -7,8 +7,9 @@ use crate::runtime::BtstackRuntime;
 
 use btstack_sys::{
     att_read_callback_handle_blob, att_server_init, att_server_register_packet_handler,
-    btstack_packet_callback_registration_t, gap_advertisements_enable, gap_advertisements_set_data,
-    gap_advertisements_set_params,
+    btstack_context_callback_registration_t, btstack_packet_callback_registration_t,
+    btstack_run_loop_execute_on_main_thread, gap_advertisements_enable,
+    gap_advertisements_set_data, gap_advertisements_set_params,
     gatt_server_get_client_configuration_handle_for_characteristic_with_uuid128,
     gatt_server_get_client_configuration_handle_for_characteristic_with_uuid16,
     gatt_server_get_handle_range_for_service_with_uuid128,
@@ -175,8 +176,10 @@ struct RuntimeState {
     ccc_to_value_handle: HashMap<u16, u16>,
     notification_enabled: HashMap<u16, bool>,
     _connected_handle: Option<hci_con_handle_t>,
+    advertising_enabled: bool,
     advertising: AdvertisingConfig,
     hci_event_cb: btstack_packet_callback_registration_t,
+    run_loop_callback: btstack_context_callback_registration_t,
 }
 
 static mut RUNTIME: Option<RuntimeState> = None;
@@ -225,12 +228,18 @@ impl<'runtime> GattPeripheralServer<'runtime> {
                 ccc_to_value_handle: HashMap::new(),
                 notification_enabled: HashMap::new(),
                 _connected_handle: None,
+                advertising_enabled: false,
                 advertising: spec.advertising,
                 hci_event_cb: btstack_packet_callback_registration_t {
                     item: btstack_sys::btstack_linked_item_t {
                         next: std::ptr::null_mut(),
                     },
                     callback: Some(packet_handler),
+                },
+                run_loop_callback: btstack_context_callback_registration_t {
+                    item: std::ptr::null_mut(),
+                    callback: Some(run_loop_advertising_update),
+                    context: std::ptr::null_mut(),
                 },
             };
 
@@ -257,32 +266,32 @@ impl<'runtime> GattPeripheralServer<'runtime> {
     }
 
     /// Configure and enable BLE advertisements for the current peripheral.
+    ///
+    /// The actual BTstack calls are marshalled onto the BTstack run-loop thread
+    /// via `btstack_run_loop_execute_on_main_thread`.
     pub fn start_advertising(&self) {
         unsafe {
             if let Some(runtime) = RUNTIME.as_mut() {
-                let mut null_addr = [0u8; 6];
-                gap_advertisements_set_params(
-                    runtime.advertising.interval_min,
-                    runtime.advertising.interval_max,
-                    runtime.advertising.adv_type,
-                    0,
-                    null_addr.as_mut_ptr(),
-                    runtime.advertising.channel_map,
-                    runtime.advertising.filter_policy,
-                );
-                gap_advertisements_set_data(
-                    runtime.advertising.data.len() as u8,
-                    runtime.advertising.data.as_ptr() as *mut u8,
-                );
-                gap_advertisements_enable(1);
+                runtime.advertising_enabled = true;
+                btstack_run_loop_execute_on_main_thread(std::ptr::addr_of_mut!(
+                    runtime.run_loop_callback
+                ));
             }
         }
     }
 
     /// Stop BLE advertisements.
+    ///
+    /// The actual BTstack calls are marshalled onto the BTstack run-loop thread
+    /// via `btstack_run_loop_execute_on_main_thread`.
     pub fn stop(&self) {
         unsafe {
-            gap_advertisements_enable(0);
+            if let Some(runtime) = RUNTIME.as_mut() {
+                runtime.advertising_enabled = false;
+                btstack_run_loop_execute_on_main_thread(std::ptr::addr_of_mut!(
+                    runtime.run_loop_callback
+                ));
+            }
         }
     }
 }
@@ -336,6 +345,30 @@ unsafe fn resolve_characteristics(
     }
 
     Ok(by_handle)
+}
+
+unsafe extern "C" fn run_loop_advertising_update(_context: *mut std::ffi::c_void) {
+    if let Some(runtime) = RUNTIME.as_mut() {
+        if runtime.advertising_enabled {
+            let mut null_addr = [0u8; 6];
+            gap_advertisements_set_params(
+                runtime.advertising.interval_min,
+                runtime.advertising.interval_max,
+                runtime.advertising.adv_type,
+                0,
+                null_addr.as_mut_ptr(),
+                runtime.advertising.channel_map,
+                runtime.advertising.filter_policy,
+            );
+            gap_advertisements_set_data(
+                runtime.advertising.data.len() as u8,
+                runtime.advertising.data.as_ptr() as *mut u8,
+            );
+            gap_advertisements_enable(1);
+        } else {
+            gap_advertisements_enable(0);
+        }
+    }
 }
 
 unsafe fn resolve_service_handle_range(uuid: GattUuid) -> Result<(u16, u16), GattPeripheralError> {
