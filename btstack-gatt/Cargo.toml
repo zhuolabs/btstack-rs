@@ -7,3 +7,4 @@ description = "GATT-oriented helpers built on top of btstack-sys"
 
 [dependencies]
 btstack-sys = { path = "../btstack-sys" }
+btstack-hci-transport-nusb = { path = "../btstack-hci-transport-nusb" }
