@@ -4,3 +4,5 @@
 //! example as a reusable module.
 
 pub mod gatt_counter;
+
+pub mod gatt_counter_main;
